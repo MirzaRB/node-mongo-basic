@@ -1,0 +1,237 @@
+swagger: '3.0'
+info:
+  title: Sample API
+  description: API description
+  version: 1.0.0
+host: 'localhost:4000'
+schemes:
+  - http
+securityDefinitions:  
+  JWT:  
+    type: apiKey  
+    in: header  
+    name: Authorization
+    description: "JWT Authorization header using the Bearer scheme. Example: 'Authorization: Bearer {token}'"
+security:
+  - Bearer: []
+
+definitions:
+  UserSignupInput:
+    type: object
+    properties:
+      firstName:
+        type: string
+        example: John
+        required: true
+      lastName:
+        type: string
+        example: Morgan
+        required: true
+      password:
+        type: string
+        example: 1234567890
+        required: true
+      email:
+        type: string
+        example: someemail@gmail.com
+        required: true
+      role:
+        type: string
+        required: true
+        example: ADMIN
+        enum:
+          - ADMIN
+          - SUBSCRIBER
+  UserLoginInput:
+    type: object
+    properties:
+      password:
+        type: string
+        example: 1234567890
+        required: true
+      email:
+        type: string
+        example: someemail@gmail.com
+        required: true
+
+paths:
+  /user/signup:
+    post:
+      summary: Add a new item
+      description: Adds a new item to the collection
+      consumes:
+        - application/json
+      tags:
+        - User
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: User need to be added
+          required: true
+          schema:
+            $ref: '#/definitions/UserSignupInput'    
+      responses:
+        201:
+          description: 'User successfully added'
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              description:
+                type: string
+                example: "User created successfully"
+        400:
+          description: Invalid input
+  /user/login:
+    post:
+      summary: Login user
+      description: Authenticate User
+      tags:
+        - User
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: User need to login
+          required: true
+          schema:
+            $ref: '#/definitions/UserLoginInput'    
+      responses:
+        201:
+          description: 'User successfully loggedin'
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              token:
+                type: string
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWEyYjcwNTM3MmYwMGE2MzMyY2JkY2QiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3MDUxNzcyNjcsImV4cCI6MTcwNTI2MzY2N30.Ls5DPzVynYKtMkZJrqwCjXmcKCledFlMdd0znKVmj_k"
+              data:
+                properties:
+                  _id:
+                    type: string
+                    example: '65a443c7ba23efeeba5994f8' 
+                  firstName:
+                    type: string
+                    example: John
+                  lastName:
+                    type: string
+                    example: John
+                  email:
+                    type: string
+                    example: someexample@gmail.com
+                  role:
+                    type: enum
+                    example: ADMIN
+                    enum:
+                      - ADMIN
+                      - SUBSCRIBER
+                  subscriptionId:
+                    type: string
+                    exmaple: awsdaqa
+                  subscriptionStartedAt:
+                    type: string
+                    format: date
+                    example: '2024-01-01'
+                  subscriptionEndedAt:
+                    type: string
+                    format: date
+                    example: '2024-01-01'
+                  createdAt:
+                    type: string
+                    format: dateTime
+                    example: '2024-01-01T14:00:00Z'
+                  updatedAt:
+                    type: string
+                    format: dateTime
+                    example: '2024-01-01T14:00:00Z'
+                  _v:
+                    type: number
+                    example: 0
+        400:
+          description: Invalid input
+        404:
+          description: 'User successfully loggedin'
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                example: 'Invalid email or password'
+  /user/me:
+    get:
+      summary: Get Logged In User
+      description: Get Logged In User
+      security:
+        - JWT: []
+      tags:
+        - User
+      consumes:
+        - application/json
+      produces:
+        - application/json    
+      responses:
+        200:
+          description: 'Get Logged In User'
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              data:
+                properties:
+                  _id: 
+                    type: string
+                    example: '65a443c7ba23efeeba5994f8'
+                  firstName:
+                    type: string
+                    example: John
+                  lastName:
+                    type: string
+                    example: John
+                  email:
+                    type: string
+                    example: someexample@gmail.com
+                  role:
+                    type: enum
+                    example: ADMIN
+                    enum:
+                      - ADMIN
+                      - SUBSCRIBER
+                  subscriptionId:
+                    type: string
+                    exmaple: 'daw231wwewe'
+                  subscriptionStartedAt:
+                    type: string
+                    format: date
+                    example: '2024-01-01'
+                  subscriptionEndedAt:
+                    type: string
+                    format: date
+                    example: '2024-01-01'
+                  createdAt:
+                    type: string
+                    format: dateTime
+                    example: '2024-01-01T14:00:00Z'
+                  updatedAt:
+                    type: string
+                    format: dateTime
+                    example: '2024-01-01T14:00:00Z'
+                  _v:
+                    type: number
+                    example: 0
+        400:
+          description: Invalid input
